@@ -46,6 +46,21 @@ import java.awt.*;
  *
  */
 public class Ship extends Entity {
+    private int screenWidth;
+    private int screenHeight;
+    
+    private double  angle;
+    private boolean thrusting;
+    private boolean turningLeft;
+    private boolean turningRight;
+    private int     shootTimer;
+    
+    private static final int    raggio = 15;
+    private static final double rotation_speed = 0.07;
+    private static final double thrust_power = 0.25;
+    private static final double friction = 0.98;
+    private static final double max_speed = 6.0;
+    private static final int    bullet_cooldown = 15;
 
     /*
      * ── COSTRUTTORE ───────────────────────────────────────────────
@@ -63,6 +78,16 @@ public class Ship extends Entity {
      *   Inizializzare angle = -Math.PI / 2  (punta verso l'alto)
      *   Inizializzare shootTimer = 0
      */
+
+    public Ship(int screenWidth, int screenHeight) {
+        super(new Vector2D(0, 0), new Vector2D(0, 0), raggio);
+        
+        this.screenWidth = screenWidth;
+        this.screenHeight = screenHeight;
+        
+        angle = -Math.PI / 2.0;
+        shootTimer = 0;
+    }
 
 
     /*

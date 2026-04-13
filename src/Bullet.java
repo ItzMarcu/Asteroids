@@ -41,6 +41,8 @@ import java.awt.*;
 public class Bullet extends Entity {
 
     private int framesLeft;
+    private Vector2D position; 
+    private Vector2D velocity;
     /*
      * ── COSTRUTTORE ───────────────────────────────────────────────
      *
@@ -54,6 +56,11 @@ public class Bullet extends Entity {
      *   Chiamare super(...).
      *   Inizializzare framesLeft.
      */
+
+    public Bullet(Vector2D position, Vector2D velocity, double radius) {
+        super(position, velocity, radius);
+        framesLeft = 55;
+    }
 
 
     /*
@@ -70,6 +77,10 @@ public class Bullet extends Entity {
      * 4. wrapAround del proitettile
      *
      */
+
+    public void update(int width, int length) {
+        
+    }
 
 
     /*

@@ -74,6 +74,11 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
     private int     level;
     private boolean gameOver;
     private boolean paused;
+    private int     width = 800;
+    private int     height = 600;
+    private int     fps = 60;
+    private int     initial_lives = 3;
+    private int     asteroids_start = 4;
 
     private final Timer timer;
     /*
@@ -93,6 +98,18 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
      *   - Chiamare startGame()
      */
 
+    public GameArea() {
+        setPreferredSize(new Dimension(width, height));
+        setBackground(Color.BLACK);
+        setFocusable(true);
+        addKeyListener(this);
+
+        ArrayList<Asteroid> asteroids = new ArrayList<Asteroid>();
+        ArrayList<Bullet> bulltes = new ArrayList<Bullet>();
+        
+        timer = new Timer(1000 / fps, this);
+        startGame(); // funzione da implementare!
+    }
 
     /*
      * ── void startGame() ───────────────────────────────────────────────
@@ -111,6 +128,21 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
      *   - Avviare il timer: timer.start()
      */
 
+    private void startGame() {
+        score =    0;
+        lives =    initial_lives;
+        level =    1;
+        gameOver = false;
+        paused =   false;
+
+        Ship nave = new Ship(width, height);
+        bullets.clear(); // .clear() -> svuota una lista
+        asteroids.clear();
+
+        spawnAsteroids();
+        timer.start();
+    }
+
 
     /*
      * ── void spawnAsteroids(int count) ─────────────────────────────────
@@ -128,6 +160,14 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
      *     3. Aggiungere l'asteroide alla lista asteroids.
      */
 
+    public void spawnAsteroids(int count) {
+        while (asteroids.size() - 1 < count) {
+            Asteroid randAsteroid = new Asteroid(); // implementare il costrutture in Asteroid
+            if (!(Vector2D.distance(randAsteroid.getPosition(), ship.getPosition()) > 150))
+                asteroids.add(randAsteroid);
+        }
+    }
+
 
     /*
      * ── void actionPerformed(ActionEvent e) ───────────────────────────
@@ -143,6 +183,20 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
      *     4. Chiamare repaint()  → ridisegna lo schermo
      */
 
+    public void actionPerformed(ActionEvent e) {
+        if (!paused && !gameOver) {
+            updateEntities();
+            checkCollisions(); // metodi da implementare!
+        }
+
+        if (asteroids.isEmpty()) {
+            level++;
+            asteroids_start += 2;
+        }
+
+        repaint();
+    }
+
 
     /*
      * ── void updateEntities() ─────────────────────────────────────────
@@ -156,6 +210,22 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
      *   4. Rimuovere dalla lista asteroids non alive
      *   5. Rimuovere dalla lista bullets non alive
      */
+
+    public void updateEntities() {
+        ship.update(width, height);
+
+        for (int i = 0; i < asteroids.size(); i++) {
+            Asteroid actualAsteroid = asteroids.get(i);
+            // if (actualAsteroid not alive) asteroids.remove(i);
+            // else actualAsteroid.update();
+        }
+
+        for (int j = 0; j < bullets.size(); j++) {
+        Bullet actualBullet = bullets.get(j);
+        // if (actualBullet not alive) bullets.remove(i);
+        // else actualBullet.update();
+        }
+    }
 
 
     /*
