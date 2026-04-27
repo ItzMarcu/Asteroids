@@ -149,7 +149,7 @@ public abstract class Entity {
      * @param width  larghezza dell'area di gioco
      * @param height altezza dell'area di gioco
      */
-    private void wrapAround(int width, int height) {
+    protected void wrapAround(int width, int height) {
         if (position.x < 0)       position.x += width;
         if (position.x > width)   position.x -= width;
         if (position.y < 0)       position.y += height;
