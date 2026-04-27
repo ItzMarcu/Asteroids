@@ -1,6 +1,9 @@
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import javax.swing.text.html.parser.Entity;
 
 /**
  * ═══════════════════════════════════════════════════════════════════
@@ -56,8 +59,19 @@ public class Asteroid extends Entity {
     // Generatore di numeri casuali condiviso da tutti gli asteroidi.
     private static final Random rng = new Random();
 
-    private final Size size;
+    private final Size           size;
     private final List<Vector2D> customShape;
+    private final Vector2D       position; 
+    private final Vector2D       velocity; 
+    private final double         RADIUS_LARGE  = 40; 
+    private final double         RADIUS_MEDIUM = 22;
+    private final double         RADIUS_SMALL  = 12; 
+    private final double         SPEED_LARGE   = 1.2;
+    private final double         SPEED_MEDIUM  = 2.0;
+    private final double         SPEED_SMALL   = 3.0;
+    private final double         SCORE_LARGE   = 20; 
+    private final double         SCORE_MEDIUM  = 50;
+    private final double         SCORE_SMALL   = 100;
 
 
     /*
@@ -77,6 +91,14 @@ public class Asteroid extends Entity {
      *   Assegnare a customShape i vertici del poligono che daranno la forma all'asteroide usando generateRandomShape()
      */
 
+    public Asteroid(Vector2D position, Vector2D velocity, Size size, double radius) {
+        super(position, velocity, radius, true);
+        this.position = position; 
+        this.velocity = velocity; 
+        this.size = size; 
+        this.customShape = generateRandomShape(radius);
+    }
+
 
     /*
      * ── private List<Vector2D> generateRandomShape(double radius) ────────────
@@ -85,6 +107,22 @@ public class Asteroid extends Entity {
      * i vertici devono essere vicini a radius in modo che la hitbox durante il gioco sia realistica
      */
 
+    private List<Vector2D> generateRandomShape(double radius) {
+        List<Vector2D> points = new ArrayList<>();
+        double step = (2 * Math.PI) / 8; 
+
+        for (int i = 0; i < 8; i++) {
+            double angle = (i * step) + (rng.nextDouble() * step);
+            double r = (radius * 0.5) + (rng.nextDouble() * radius); 
+
+            double x = r * Math.cos(angle);
+            double y = r * Math.sin(angle); 
+
+            temp.add(new Vector2D(x, y));
+        }
+
+        return temp;
+    }
 
     /*
      * ── spawnRandom(int screenWidth, int screenHeight) ────────────
@@ -107,6 +145,16 @@ public class Asteroid extends Entity {
      *   6. Creare e restituire il nuovo Asteroid.
      */
 
+    public Asteroid spawnRandom(int screenWidth, int screenHeight) {
+        int x = (int) (rng.nextDouble() * screenWidth + 1);
+        int y = (int) (rng.nextDouble() * screenHeight + 1);
+        Vector2D position = new Vector2D(x, y);
+
+       velocity = generateRandomVelocity(getRadius, SPEED_LARGE);
+        
+        return new Asteroid(position, velocity, Size.LARGE, RADIUS_LARGE);
+    }
+
 
     /*
      * ── update(int width, int height) ────────────────────────────
@@ -120,6 +168,11 @@ public class Asteroid extends Entity {
      *
      * Nota: gli asteroidi non cambiano mai velocità da soli.
      */
+
+    public void update(int width, int height) {
+        move(); 
+        wrapAround(width, height);
+    }
 
 
     /*
@@ -142,6 +195,26 @@ public class Asteroid extends Entity {
      * Non chiamare destroy() qui: ci pensa GameArea.
      */
 
+    public List<Asteroid> split() {
+        Size actualSize = getSize();
+
+        if (actualSize == Size.LARGE) {
+            return new ArrayList<>(
+                new Asteroid(this.position, generateRandomVelocity(RADIUS_MEDIUM, SPEED_MEDIUM), Size.MEDIUM, RADIUS_MEDIUM), 
+                new Asteroid(this.position, generateRandomVelocity(RADIUS_MEDIUM, SPEED_MEDIUM), Size.MEDIUM, RADIUS_MEDIUM)
+            ); 
+        }
+
+        if (actualSize == Size.MEDIUM) {
+            return new ArrayList<>(
+                new Asteroid(this.position, generateRandomVelocity(RADIUS_SMALL, SPEED_SMALL), Size.SMALL, RADIUS_SMALL), 
+                new Asteroid(this.position, generateRandomVelocity(RADIUS_SMALL, SPEED_SMALL), Size.SMALL, RADIUS_SMALL)
+            )
+        }
+
+        return new ArrayList<>();
+    }
+
 
     /*
      * ── getScore() ───────────────────────────────────────────────
@@ -150,6 +223,19 @@ public class Asteroid extends Entity {
      *                asteroide viene distrutto
      *
      */
+
+    public int getScore() { 
+        switch (getSize()) {
+            case Size.LARGE:
+                return SCORE_LARGE; 
+            case Size.MEDIUM: 
+                return SCORE_MEDIUM; 
+            case Size.SMALL: 
+                return SCORE_SMALL; 
+            default:
+                return 0;
+        }
+    }
 
 
     /*
@@ -161,6 +247,8 @@ public class Asteroid extends Entity {
      * Il sistema di coordinate è relativo al centro (0,0).
      */
 
+    public List<Vector2D> getShape() {}
+
 
     /*
      * ── getColor() ───────────────────────────────────────────────
@@ -168,5 +256,55 @@ public class Asteroid extends Entity {
      * Output: Color
      *
      */
+
+    public Color getColor() { return Color.WHITE; }
+
+    /**
+     *  GetSize() 
+     * 
+     *  return type: Size.size
+     */
+
+    private Size getSize() { return this.size; }
+
+    /**
+     * get\()
+     * 
+     * return type: double; 
+     * 
+     * @param radius
+     * @return
+     */
+
+    private double getRadius() { 
+        switch (getSize()) {
+            case Size.LARGE:
+                return RADIUS_LARGE; 
+            case Size.MEDIUM: 
+                return RADIUS_MEDIUM; 
+            case Size.SMALL: 
+                return RADIUS_SMALL; 
+            default:
+                break;
+        }
+    }
+
+    /**
+     * generateRandomVelocity(double radius) 
+     * 
+     * return type: Vector2D 
+     */
+
+    private Vector2D  generateRandomVelocity(double radius, double speed) {
+        double angle = rng.nextDouble() * 2 * Math.PI; 
+        double randomVelocity = rng.nextDouble() * (speed + 1);
+
+        Vector2D velocity = new Vector2D(
+            Math.cos(angle) * randomVelocity,
+            Math.sin(angle) * randomVelocity
+        );
+
+        return velocity; 
+    }
 
 }
