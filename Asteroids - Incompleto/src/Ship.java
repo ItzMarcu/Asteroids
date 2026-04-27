@@ -1,4 +1,6 @@
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  * ═══════════════════════════════════════════════════════════════════
@@ -46,22 +48,18 @@ import java.awt.*;
  *
  */
 public class Ship extends Entity {
-    private int screenWidth;
-    private int screenHeight;
+    private double    angle;
+    private boolean   thrusting;
+    private boolean   turningLeft;
+    private boolean   turningRight;
+    private int       shootTimer;
+    private static final int RADIUS = 15;
+    private static final double ROTATION_SPEED = 0.07;
+    private static final double THRUST_POWER = 0.25;
+    private static final double FRICTION = 0.98;
+    private static final double MAX_SPEED = 6.0;
+    private static final int BULLET_COOLDOWN = 15;
     
-    private double  angle;
-    private boolean thrusting;
-    private boolean turningLeft;
-    private boolean turningRight;
-    private int     shootTimer;
-    
-    private static final int    raggio = 15;
-    private static final double rotation_speed = 0.07;
-    private static final double thrust_power = 0.25;
-    private static final double friction = 0.98;
-    private static final double max_speed = 6.0;
-    private static final int    bullet_cooldown = 15;
-
     /*
      * ── COSTRUTTORE ───────────────────────────────────────────────
      *
@@ -78,17 +76,12 @@ public class Ship extends Entity {
      *   Inizializzare angle = -Math.PI / 2  (punta verso l'alto)
      *   Inizializzare shootTimer = 0
      */
-
     public Ship(int screenWidth, int screenHeight) {
-        super(new Vector2D(0, 0), new Vector2D(0, 0), raggio);
-        
-        this.screenWidth = screenWidth;
-        this.screenHeight = screenHeight;
-        
-        angle = -Math.PI / 2.0;
-        shootTimer = 0;
+        super( new Vector2D(screenWidth/2,screenHeight/2), new Vector2D(0, 0), RADIUS); //ricontrollare
+        this.angle = -Math.PI / 2;
+        this.shootTimer = 0;
     }
-
+    
 
     /*
      * ── METODI DI INPUT - NON MODIFICARE ───────────────────────────
@@ -106,6 +99,37 @@ public class Ship extends Entity {
     public void setThrusting(boolean v)    { thrusting    = v; }
 
 
+    public void update(int width, int height) {
+        //1
+        if (turningLeft) 
+            angle -= ROTATION_SPEED;
+        
+        if (turningRight)
+            angle += ROTATION_SPEED;
+        
+        //2 + 3 + 4
+        if (thrusting)
+            getVelocity().add(new Vector2D(Math.cos(angle) * THRUST_POWER, Math.sin(angle) * THRUST_POWER));
+        else 
+            getVelocity().scale(FRICTION);
+        
+        //4 DA CAPIRE SE USARE QUESTO
+        if (getVelocity().length() > MAX_SPEED)
+            while (getVelocity().length() != MAX_SPEED)
+                getVelocity().scale(FRICTION);
+
+        //5
+        move();
+
+        //6
+        wrapAround(width, height);
+
+        //7
+        if (shootTimer > 0) {
+            shootTimer -= 1;
+        }
+            
+    }
 
     /*
      * ── update(int width, int height) ────────────────────────────
@@ -141,6 +165,23 @@ public class Ship extends Entity {
      *  7. COOLDOWN SPARO
      */
 
+    public shoot(){
+        if (shootTimer > 0) {
+            return null;
+        }
+        else {
+            double bx = getPosition().x + Math.cos(angle) * RADIUS;
+            double by = getPosition().y + Math.sin(angle) * RADIUS;
+
+            double vx = Math.cos(angle) * Bullet.BULLET_SPEED + getVelocity().x;
+            double vy = Math.sin(angle) * Bullet.BULLET_SPEED + getVelocity().y;
+             
+            shootTimer = BULLET_COOLDOWN;
+
+            Bullet bullet = new Bullet(new Vector2D(bx, by), new Vector2D(vx, vy));
+            return bullet;
+        }
+    }
 
     /*
      * ── shoot() ──────────────────────────────────────────────────
@@ -162,7 +203,14 @@ public class Ship extends Entity {
      * Questo metodo viene chiamato da GameArea quando il giocatore
      * preme la barra spaziatrice.
      */
-
+    @Override
+    public List<Vector2D> getShape(){
+        List<Vector2D> p = new ArrayList<>();
+        p.add(new Vector2D(15, 0));
+        p.add(new Vector2D(-10, -8));
+        p.add(new Vector2D(-10, 8));
+        return p;
+    }
 
     /*
      * ── getShape() ───────────────────────────────────────────────
@@ -175,7 +223,10 @@ public class Ship extends Entity {
      *   (-10,  8)  → angolo inferiore sinistro
      * Entity ruoterà automaticamente questi punti di `angle` radianti.
      */
-
+    @Override
+    public Color getColor(){
+        return Color.WHITE;
+    }
 
     /*
      * ── getColor() ───────────────────────────────────────────────
@@ -185,6 +236,10 @@ public class Ship extends Entity {
      * Restituire Color
      */
 
+    @Override
+    public double getAngle(){
+        return angle;
+    }
 
     /*
      * ── getAngle() ───────────────────────────────────────────────
