@@ -110,7 +110,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
         timer = new Timer(1000 / fps, this);
         startGame(); // funzione da implementare!
     }
-
+    
     /*
      * ── void startGame() ───────────────────────────────────────────────
      *
@@ -256,7 +256,9 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
      * - altrimenti la nave viene ricreata (respawn)
      * In ogni aggiornamento si può perdere al massimo una vita.
      */
-
+    public void checkCollisions(){
+        if()
+    }
 
     // ═══════════════════════════════════════════════════════════════
     // RENDERING — già implementato, non modificare

@@ -98,7 +98,7 @@ public class Ship extends Entity {
     public void setTurningRight(boolean v) { turningRight = v; }
     public void setThrusting(boolean v)    { thrusting    = v; }
 
-
+    @Override
     public void update(int width, int height) {
         //1
         if (turningLeft) 
