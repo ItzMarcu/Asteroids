@@ -92,7 +92,6 @@ public class Asteroid extends Entity {
     public Asteroid(Vector2D position, Vector2D velocity, Size size, double radius) {
         super(position, velocity, radius);
         this.position = position; 
-        //this.velocity = velocity; 
         this.size = size; 
         this.customShape = generateRandomShape(radius);
     }
@@ -199,8 +198,8 @@ public class Asteroid extends Entity {
         if (actualSize == Size.LARGE) {
             return new ArrayList<Asteroid>(
                 List.of(
-                    new Asteroid(this.position, generateRandomVelocity(RADIUS_MEDIUM, SPEED_MEDIUM), Size.MEDIUM, RADIUS_MEDIUM), 
-                    new Asteroid(this.position, generateRandomVelocity(RADIUS_MEDIUM, SPEED_MEDIUM), Size.MEDIUM, RADIUS_MEDIUM)
+                    new Asteroid(position.copy(), generateRandomVelocity(RADIUS_MEDIUM, SPEED_MEDIUM), Size.MEDIUM, RADIUS_MEDIUM), 
+                    new Asteroid(position.copy(), generateRandomVelocity(RADIUS_MEDIUM, SPEED_MEDIUM), Size.MEDIUM, RADIUS_MEDIUM)
                 )
 
                 
@@ -210,8 +209,8 @@ public class Asteroid extends Entity {
         if (actualSize == Size.MEDIUM) {
             return new ArrayList<Asteroid>(
                 List.of(
-                    new Asteroid(this.position, generateRandomVelocity(RADIUS_SMALL, SPEED_SMALL), Size.SMALL, RADIUS_SMALL), 
-                    new Asteroid(this.position, generateRandomVelocity(RADIUS_SMALL, SPEED_SMALL), Size.SMALL, RADIUS_SMALL)
+                    new Asteroid(position.copy(), generateRandomVelocity(RADIUS_SMALL, SPEED_SMALL), Size.SMALL, RADIUS_SMALL), 
+                    new Asteroid(position.copy(), generateRandomVelocity(RADIUS_SMALL, SPEED_SMALL), Size.SMALL, RADIUS_SMALL)
                 )
             );
         }

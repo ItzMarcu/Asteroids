@@ -1,7 +1,6 @@
 import java.awt.*;
 import java.util.List;
 import java.util.ArrayList;
-//import java.util.Vector;
 
 /**
  * ═══════════════════════════════════════════════════════════════════
@@ -54,10 +53,11 @@ public class Ship extends Entity {
     private boolean   turningLeft;
     private boolean   turningRight;
     private int       shootTimer;
+    private Color     color;
     private static final int RADIUS = 15;
     private static final double ROTATION_SPEED = 0.07;
     private static final double THRUST_POWER = 0.25;
-    private static final double FRICTION = 0.98;
+    private static final double FRICTION = 0.5;
     private static final double MAX_SPEED = 6.0;
     private static final int BULLET_COOLDOWN = 15;
     
@@ -81,6 +81,7 @@ public class Ship extends Entity {
         super( new Vector2D(screenWidth/2,screenHeight/2), new Vector2D(0, 0), RADIUS); //ricontrollare
         this.angle = -Math.PI / 2;
         this.shootTimer = 0;
+        this.color = Color.WHITE;
     }
     
 
@@ -116,9 +117,7 @@ public class Ship extends Entity {
         
         //4 DA CAPIRE SE USARE QUESTO
         if (getVelocity().length() > MAX_SPEED)
-            while (getVelocity().length() != MAX_SPEED)
-                getVelocity().scale(FRICTION);
-
+            getVelocity().scale(FRICTION); // MAX_SPEED = 6 (4)
         //5
         move();
 
@@ -225,9 +224,7 @@ public class Ship extends Entity {
      * Entity ruoterà automaticamente questi punti di `angle` radianti.
      */
     @Override
-    public Color getColor(){
-        return Color.WHITE;
-    }
+    public Color getColor() { return this.color; }
 
     /*
      * ── getColor() ───────────────────────────────────────────────
@@ -238,9 +235,7 @@ public class Ship extends Entity {
      */
 
     @Override
-    public double getAngle(){
-        return angle;
-    }
+    public double getAngle() { return angle; }
 
     /*
      * ── getAngle() ───────────────────────────────────────────────
@@ -251,5 +246,13 @@ public class Ship extends Entity {
      * il campo angle. Questo permette a draw() di ruotare
      * correttamente la forma.
      */
+
+    /**
+     * 
+     * setColor(Color color)
+     * 
+     */
+
+    public void setColor(Color color) { this.color = color; }
 
 }

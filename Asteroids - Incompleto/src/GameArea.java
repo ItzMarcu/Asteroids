@@ -5,6 +5,11 @@ import java.util.List;
 import java.util.Iterator;
 import javax.swing.*;
 
+// TODO: 
+/**
+ * 1) sistemare le vite
+*/
+
 /**
  * ═══════════════════════════════════════════════════════════════════
  *  CLASSE DA IMPLEMENTARE — GameArea (l'area di gioco)
@@ -73,6 +78,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
     private int     score;
     private int     lives;
     private int     level;
+    private int     damageable; 
     private boolean gameOver;
     private boolean paused;
 
@@ -107,7 +113,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
         addKeyListener(this);
 
         asteroids = new ArrayList<Asteroid>();
-        bullets = new ArrayList<Bullet>();
+        bullets = new ArrayList<Bullet>(); 
         
         timer = new Timer(1000 / FPS, this);
         startGame(); 
@@ -131,6 +137,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
      */
 
     private void startGame() {
+        damageable = 0;
         score =    0;
         lives =    INITIAL_LIVES;
         level =    1;
@@ -242,6 +249,10 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
 
         asteroids.removeAll(asteroidsToRemove);
         bullets.removeAll(bulletsToRemove);
+        
+        if (damageable > 0 ) damageable--;  
+        if (damageable == 0) ship.setColor(Color.WHITE);
+
     }
 
 
@@ -289,6 +300,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
                 if (b.collidesWith(a)) { 
                     a.destroy(); 
                     b.destroy(); 
+                    score += a.getScore();
                     
                     List<Asteroid> buffer = a.split(); 
                     if (!buffer.isEmpty())
@@ -302,13 +314,18 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
 
         for (Asteroid a : asteroids) {
             if (ship.collidesWith(a)) {
-                lives--; 
-                if (lives <= 0) {
-                    gameOver = true; 
-                    return; 
+                if (damageable == 0) {
+                    lives--;  
+                    if (lives <= 0) {
+                        gameOver = true; 
+                        return; 
+                    } 
+
+                    damageable = 120;
+                    ship.setColor(Color.YELLOW);
+    
+                    break;
                 }
-                
-                break; 
             }
         }
         
