@@ -82,8 +82,8 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
     private boolean gameOver;
     private boolean paused;
 
-    private final int     WIDTH = 800;
-    private final int     HEIGHT = 600;
+    private final int     WIDTH = 1920;
+    private final int     HEIGHT = 1080;
     private final int     FPS = 60;
     private final int     INITIAL_LIVES = 3;
     private int     ASTEROIDS_START = 4;
