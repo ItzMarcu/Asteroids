@@ -28,14 +28,14 @@ public class Bullet extends Entity {
    @Override
    public List<Vector2D> getShape(){
       return new ArrayList<Vector2D>(List.of(
-      new Vector2D(-2, -2),
-      new Vector2D(2, -2),
-      new Vector2D(2, 2),
-      new Vector2D(-2, 2)
+      new Vector2D(-3, -3),
+      new Vector2D(3, -3),
+      new Vector2D(3, 3),
+      new Vector2D(-3, 3)
       )); 
    }
 
 
-   public Color getColor(){ return Color.BLUE; }
+   public Color getColor(){ return Color.RED; }
 
 }
