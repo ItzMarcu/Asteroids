@@ -60,16 +60,16 @@ public class Asteroid extends Entity {
     private final Size           size;
     private final List<Vector2D> customShape;
     private final Vector2D       position; 
-    private final Vector2D       velocity; 
-    private final double         RADIUS_LARGE  = 40; 
-    private final double         RADIUS_MEDIUM = 22;
-    private final double         RADIUS_SMALL  = 12; 
-    private final double         SPEED_LARGE   = 1.2;
-    private final double         SPEED_MEDIUM  = 2.0;
-    private final double         SPEED_SMALL   = 3.0;
-    private final double         SCORE_LARGE   = 20; 
-    private final double         SCORE_MEDIUM  = 50;
-    private final double         SCORE_SMALL   = 100;
+    //private final Vector2D       velocity; 
+    private static final double         RADIUS_LARGE  = 40; 
+    private static final double         RADIUS_MEDIUM = 22;
+    private static final double         RADIUS_SMALL  = 12; 
+    private static final double         SPEED_LARGE   = 1.2;
+    private static final double         SPEED_MEDIUM  = 2.0;
+    private static final double         SPEED_SMALL   = 3.0;
+    private static final double         SCORE_LARGE   = 20; 
+    private static final double         SCORE_MEDIUM  = 50;
+    private static final double         SCORE_SMALL   = 100;
 
 
     /*
@@ -92,7 +92,7 @@ public class Asteroid extends Entity {
     public Asteroid(Vector2D position, Vector2D velocity, Size size, double radius) {
         super(position, velocity, radius);
         this.position = position; 
-        this.velocity = velocity; 
+        //this.velocity = velocity; 
         this.size = size; 
         this.customShape = generateRandomShape(radius);
     }
@@ -143,12 +143,12 @@ public class Asteroid extends Entity {
      *   6. Creare e restituire il nuovo Asteroid.
      */
 
-    public Asteroid spawnRandom(int screenWidth, int screenHeight) {
+    public static Asteroid spawnRandom(int screenWidth, int screenHeight) {
         int x = (int) (rng.nextDouble() * screenWidth + 1);
         int y = (int) (rng.nextDouble() * screenHeight + 1);
         Vector2D position = new Vector2D(x, y);
 
-        velocity = Asteroid.generateRandomVelocity(getRadius(), SPEED_LARGE);
+        Vector2D velocity = generateRandomVelocity(RADIUS_LARGE, SPEED_LARGE);
         
         return new Asteroid(position, velocity, Size.LARGE, RADIUS_LARGE);
     }
@@ -197,16 +197,22 @@ public class Asteroid extends Entity {
         Size actualSize = getSize();
 
         if (actualSize == Size.LARGE) {
-            return new ArrayList<>(
-                new Asteroid(this.position, Asteroid.generateRandomVelocity(RADIUS_MEDIUM, SPEED_MEDIUM), Size.MEDIUM, RADIUS_MEDIUM), 
-                new Asteroid(this.position, Asteroid.generateRandomVelocity(RADIUS_MEDIUM, SPEED_MEDIUM), Size.MEDIUM, RADIUS_MEDIUM)
+            return new ArrayList<Asteroid>(
+                List.of(
+                    new Asteroid(this.position, generateRandomVelocity(RADIUS_MEDIUM, SPEED_MEDIUM), Size.MEDIUM, RADIUS_MEDIUM), 
+                    new Asteroid(this.position, generateRandomVelocity(RADIUS_MEDIUM, SPEED_MEDIUM), Size.MEDIUM, RADIUS_MEDIUM)
+                )
+
+                
             ); 
         }
 
         if (actualSize == Size.MEDIUM) {
-            return new ArrayList<>(
-                new Asteroid(this.position, Asteroid.generateRandomVelocity(RADIUS_SMALL, SPEED_SMALL), Size.SMALL, RADIUS_SMALL), 
-                new Asteroid(this.position, Asteroid.generateRandomVelocity(RADIUS_SMALL, SPEED_SMALL), Size.SMALL, RADIUS_SMALL)
+            return new ArrayList<Asteroid>(
+                List.of(
+                    new Asteroid(this.position, generateRandomVelocity(RADIUS_SMALL, SPEED_SMALL), Size.SMALL, RADIUS_SMALL), 
+                    new Asteroid(this.position, generateRandomVelocity(RADIUS_SMALL, SPEED_SMALL), Size.SMALL, RADIUS_SMALL)
+                )
             );
         }
 
@@ -222,7 +228,7 @@ public class Asteroid extends Entity {
      *
      */
 
-    public int getScore() { 
+    public double getScore() { 
         switch (getSize()) {
             case Size.LARGE:
                 return SCORE_LARGE; 
@@ -274,18 +280,7 @@ public class Asteroid extends Entity {
      * @return
      */
 
-    private double getRadius() { 
-        switch (getSize()) {
-            case Size.LARGE:
-                return RADIUS_LARGE; 
-            case Size.MEDIUM: 
-                return RADIUS_MEDIUM; 
-            case Size.SMALL: 
-                return RADIUS_SMALL; 
-            default:
-                break;
-        }
-    }
+
 
     /**
      * generateRandomVelocity(double radius) 

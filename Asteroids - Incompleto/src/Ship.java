@@ -1,6 +1,7 @@
 import java.awt.*;
+import java.util.List;
 import java.util.ArrayList;
-import java.util.Vector;
+//import java.util.Vector;
 
 /**
  * ═══════════════════════════════════════════════════════════════════
@@ -165,7 +166,7 @@ public class Ship extends Entity {
      *  7. COOLDOWN SPARO
      */
 
-    public shoot(){
+    public Bullet shoot(){
         if (shootTimer > 0) {
             return null;
         }

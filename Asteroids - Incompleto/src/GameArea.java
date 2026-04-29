@@ -75,11 +75,12 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
     private int     level;
     private boolean gameOver;
     private boolean paused;
-    private int     width = 800;
-    private int     height = 600;
-    private int     fps = 60;
-    private int     initial_lives = 3;
-    private int     asteroids_start = 4;
+
+    private final int     WIDTH = 800;
+    private final int     HEIGHT = 600;
+    private final int     FPS = 60;
+    private final int     INITIAL_LIVES = 3;
+    private int     ASTEROIDS_START = 4;
 
     private final Timer timer;
     /*
@@ -100,15 +101,15 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
      */
 
     public GameArea() {
-        setPreferredSize(new Dimension(width, height));
+        setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setBackground(Color.BLACK);
         setFocusable(true);
         addKeyListener(this);
 
-        ArrayList<Asteroid> asteroids = new ArrayList<Asteroid>();
-        ArrayList<Bullet> bulltes = new ArrayList<Bullet>();
+        asteroids = new ArrayList<Asteroid>();
+        bullets = new ArrayList<Bullet>();
         
-        timer = new Timer(1000 / fps, this);
+        timer = new Timer(1000 / FPS, this);
         startGame(); 
     }
     
@@ -131,16 +132,16 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
 
     private void startGame() {
         score =    0;
-        lives =    initial_lives;
+        lives =    INITIAL_LIVES;
         level =    1;
         gameOver = false;
         paused =   false;
 
-        Ship nave = new Ship(width, height);
+        ship = new Ship(WIDTH, HEIGHT);
         bullets.clear(); // .clear() -> svuota una lista
         asteroids.clear();
 
-        spawnAsteroids();
+        spawnAsteroids(ASTEROIDS_START);
         timer.start();
     }
 
@@ -163,9 +164,9 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
 
     public void spawnAsteroids(int count) {
         while (asteroids.size() - 1 < count) { 
-            Asteroid randomAsteroid = spawnRandom(width, height); 
+            Asteroid randomAsteroid = Asteroid.spawnRandom(WIDTH, HEIGHT); 
             if (Vector2D.distance(randomAsteroid.getPosition(), ship.getPosition()) < 150) 
-                randomAsteroid = spawnRandom(width, height); 
+                randomAsteroid = Asteroid.spawnRandom(WIDTH, HEIGHT); 
             else 
                 asteroids.add(randomAsteroid); 
         }
@@ -194,7 +195,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
 
         if (asteroids.isEmpty()) {
             level++;
-            asteroids_start += 2;
+            ASTEROIDS_START += 2;
         }
 
         repaint();
@@ -215,7 +216,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
      */
 
     public void updateEntities() {
-        ship.update(width, height);
+        ship.update(WIDTH, HEIGHT);
 
         Iterator<Asteroid> asteroidsIterator = asteroids.iterator(); 
         List<Asteroid> asteroidsToRemove = new ArrayList<>(); 
@@ -224,6 +225,8 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
             Asteroid actual = asteroidsIterator.next(); 
             if (!actual.isAlive()) 
                 asteroidsToRemove.add(actual);
+            else
+                actual.update(WIDTH, HEIGHT);
         }
 
         Iterator<Bullet> bulletsIterator = bullets.iterator(); 
@@ -233,6 +236,8 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
             Bullet actual = bulletsIterator.next(); 
             if (!actual.isAlive()) 
                 bulletsToRemove.add(actual);
+            else
+                actual.update(WIDTH, HEIGHT);
         }
 
         asteroids.removeAll(asteroidsToRemove);
@@ -285,7 +290,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
                     a.destroy(); 
                     b.destroy(); 
                     
-                    List<Asteroid> buffer = b.split(); 
+                    List<Asteroid> buffer = a.split(); 
                     if (!buffer.isEmpty())
                         newAsteroids.addAll(buffer);
 
@@ -318,7 +323,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
     // ═══════════════════════════════════════════════════════════════
 
     @Override
-    private void paintComponent(Graphics g) {
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         if (gameOver) {
