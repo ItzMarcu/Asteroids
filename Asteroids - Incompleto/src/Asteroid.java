@@ -3,8 +3,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import javax.swing.text.html.parser.Entity;
-
 /**
  * ═══════════════════════════════════════════════════════════════════
  *  CLASSE DA IMPLEMENTARE — Asteroid (un asteroide)
@@ -92,7 +90,7 @@ public class Asteroid extends Entity {
      */
 
     public Asteroid(Vector2D position, Vector2D velocity, Size size, double radius) {
-        super(position, velocity, radius, true);
+        super(position, velocity, radius);
         this.position = position; 
         this.velocity = velocity; 
         this.size = size; 
@@ -118,10 +116,10 @@ public class Asteroid extends Entity {
             double x = r * Math.cos(angle);
             double y = r * Math.sin(angle); 
 
-            temp.add(new Vector2D(x, y));
+            points.add(new Vector2D(x, y));
         }
 
-        return temp;
+        return points;
     }
 
     /*
@@ -150,7 +148,7 @@ public class Asteroid extends Entity {
         int y = (int) (rng.nextDouble() * screenHeight + 1);
         Vector2D position = new Vector2D(x, y);
 
-       velocity = generateRandomVelocity(getRadius, SPEED_LARGE);
+        velocity = Asteroid.generateRandomVelocity(getRadius(), SPEED_LARGE);
         
         return new Asteroid(position, velocity, Size.LARGE, RADIUS_LARGE);
     }
@@ -200,16 +198,16 @@ public class Asteroid extends Entity {
 
         if (actualSize == Size.LARGE) {
             return new ArrayList<>(
-                new Asteroid(this.position, generateRandomVelocity(RADIUS_MEDIUM, SPEED_MEDIUM), Size.MEDIUM, RADIUS_MEDIUM), 
-                new Asteroid(this.position, generateRandomVelocity(RADIUS_MEDIUM, SPEED_MEDIUM), Size.MEDIUM, RADIUS_MEDIUM)
+                new Asteroid(this.position, Asteroid.generateRandomVelocity(RADIUS_MEDIUM, SPEED_MEDIUM), Size.MEDIUM, RADIUS_MEDIUM), 
+                new Asteroid(this.position, Asteroid.generateRandomVelocity(RADIUS_MEDIUM, SPEED_MEDIUM), Size.MEDIUM, RADIUS_MEDIUM)
             ); 
         }
 
         if (actualSize == Size.MEDIUM) {
             return new ArrayList<>(
-                new Asteroid(this.position, generateRandomVelocity(RADIUS_SMALL, SPEED_SMALL), Size.SMALL, RADIUS_SMALL), 
-                new Asteroid(this.position, generateRandomVelocity(RADIUS_SMALL, SPEED_SMALL), Size.SMALL, RADIUS_SMALL)
-            )
+                new Asteroid(this.position, Asteroid.generateRandomVelocity(RADIUS_SMALL, SPEED_SMALL), Size.SMALL, RADIUS_SMALL), 
+                new Asteroid(this.position, Asteroid.generateRandomVelocity(RADIUS_SMALL, SPEED_SMALL), Size.SMALL, RADIUS_SMALL)
+            );
         }
 
         return new ArrayList<>();
@@ -247,7 +245,7 @@ public class Asteroid extends Entity {
      * Il sistema di coordinate è relativo al centro (0,0).
      */
 
-    public List<Vector2D> getShape() {}
+    public List<Vector2D> getShape() { return this.customShape; }
 
 
     /*
@@ -295,7 +293,7 @@ public class Asteroid extends Entity {
      * return type: Vector2D 
      */
 
-    private Vector2D  generateRandomVelocity(double radius, double speed) {
+    public static Vector2D  generateRandomVelocity(double radius, double speed) {
         double angle = rng.nextDouble() * 2 * Math.PI; 
         double randomVelocity = rng.nextDouble() * (speed + 1);
 
@@ -306,5 +304,4 @@ public class Asteroid extends Entity {
 
         return velocity; 
     }
-
 }

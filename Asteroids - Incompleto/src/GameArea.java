@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
 import javax.swing.*;
 
 /**
@@ -108,7 +109,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
         ArrayList<Bullet> bulltes = new ArrayList<Bullet>();
         
         timer = new Timer(1000 / fps, this);
-        startGame(); // funzione da implementare!
+        startGame(); 
     }
     
     /*
@@ -161,10 +162,12 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
      */
 
     public void spawnAsteroids(int count) {
-        while (asteroids.size() - 1 < count) {
-            Asteroid randAsteroid = new Asteroid(); // implementare il costrutture in Asteroid
-            if (!(Vector2D.distance(randAsteroid.getPosition(), ship.getPosition()) > 150))
-                asteroids.add(randAsteroid);
+        while (asteroids.size() - 1 < count) { 
+            Asteroid randomAsteroid = spawnRandom(width, height); 
+            if (Vector2D.distance(randomAsteroid.getPosition(), ship.getPosition()) < 150) 
+                randomAsteroid = spawnRandom(width, height); 
+            else 
+                asteroids.add(randomAsteroid); 
         }
     }
 
@@ -186,7 +189,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
     public void actionPerformed(ActionEvent e) {
         if (!paused && !gameOver) {
             updateEntities();
-            checkCollisions(); // metodi da implementare!
+            checkCollisions(); 
         }
 
         if (asteroids.isEmpty()) {
@@ -214,17 +217,26 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
     public void updateEntities() {
         ship.update(width, height);
 
-        for (int i = 0; i < asteroids.size(); i++) {
-            Asteroid actualAsteroid = asteroids.get(i);
-            // if (actualAsteroid not alive) asteroids.remove(i);
-            // else actualAsteroid.update();
+        Iterator<Asteroid> asteroidsIterator = asteroids.iterator(); 
+        List<Asteroid> asteroidsToRemove = new ArrayList<>(); 
+        
+        while (asteroidsIterator.hasNext()) {
+            Asteroid actual = asteroidsIterator.next(); 
+            if (!actual.isAlive()) 
+                asteroidsToRemove.add(actual);
         }
 
-        for (int j = 0; j < bullets.size(); j++) {
-        Bullet actualBullet = bullets.get(j);
-        // if (actualBullet not alive) bullets.remove(i);
-        // else actualBullet.update();
+        Iterator<Bullet> bulletsIterator = bullets.iterator(); 
+        List<Bullet> bulletsToRemove = new ArrayList<>();
+
+        while (bulletsIterator.hasNext()) { 
+            Bullet actual = bulletsIterator.next(); 
+            if (!actual.isAlive()) 
+                bulletsToRemove.add(actual);
         }
+
+        asteroids.removeAll(asteroidsToRemove);
+        bullets.removeAll(bulletsToRemove);
     }
 
 
@@ -257,7 +269,48 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
      * In ogni aggiornamento si può perdere al massimo una vita.
      */
     public void checkCollisions(){
-        if()
+        Iterator<Bullet> bullettsIterator = bullets.iterator(); 
+        List<Asteroid> newAsteroids = new ArrayList<>(); 
+        
+        while (bullettsIterator.hasNext()) { 
+            Bullet b = bullettsIterator.next(); 
+            Iterator<Asteroid> asteroidsIterator = asteroids.iterator();
+
+            while (asteroidsIterator.hasNext()) {
+                Asteroid a = asteroidsIterator.next(); 
+
+                if (!a.isAlive()) continue;  
+                
+                if (b.collidesWith(a)) { 
+                    a.destroy(); 
+                    b.destroy(); 
+                    
+                    List<Asteroid> buffer = b.split(); 
+                    if (!buffer.isEmpty())
+                        newAsteroids.addAll(buffer);
+
+                    break; 
+                }
+
+            }    
+        }
+
+        for (Asteroid a : asteroids) {
+            if (ship.collidesWith(a)) {
+                lives--; 
+                if (lives <= 0) {
+                    gameOver = true; 
+                    return; 
+                }
+                
+                break; 
+            }
+        }
+        
+        asteroids.addAll(newAsteroids);
+        newAsteroids.clear();
+        
+        updateEntities();
     }
 
     // ═══════════════════════════════════════════════════════════════
