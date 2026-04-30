@@ -137,7 +137,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
      */
 
     private void startGame() {
-        ASTEROIDS_START = 1;
+        ASTEROIDS_START = 4;
         damageable = 0;
         score =    0;
         lives =    INITIAL_LIVES;
