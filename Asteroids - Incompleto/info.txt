@@ -1,9 +1,9 @@
 RISPETTATE QUESTA STRUTTURA PER INSERIRE I VOSTRI DATI
 
 STUDENTE 1:
-nome cognome
-mail
-matricola
+Andrea Marcucci
+andrea.marcucci4@studio.unibo.it
+0001224852
 
 STUDENTE 2:
 ....
