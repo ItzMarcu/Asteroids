@@ -7,7 +7,7 @@ import javax.swing.*;
 
 // TODO: 
 /**
- * 1) sistemare le vite
+ * 1) sistemare il level up!
 */
 
 /**
@@ -86,7 +86,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
     private final int     HEIGHT = 1080;
     private final int     FPS = 60;
     private final int     INITIAL_LIVES = 3;
-    private int     ASTEROIDS_START = 4;
+    private int     ASTEROIDS_START;
 
     private final Timer timer;
     /*
@@ -137,6 +137,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
      */
 
     private void startGame() {
+        ASTEROIDS_START = 4;
         damageable = 0;
         score =    0;
         lives =    INITIAL_LIVES;
@@ -170,7 +171,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
      */
 
     public void spawnAsteroids(int count) {
-        while (asteroids.size() - 1 < count) { 
+        while (asteroids.size() < count) { 
             Asteroid randomAsteroid = Asteroid.spawnRandom(WIDTH, HEIGHT); 
             if (Vector2D.distance(randomAsteroid.getPosition(), ship.getPosition()) < 150) 
                 randomAsteroid = Asteroid.spawnRandom(WIDTH, HEIGHT); 
@@ -199,12 +200,12 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
             updateEntities();
             checkCollisions(); 
         }
-
+        
         if (asteroids.isEmpty()) {
             level++;
             ASTEROIDS_START += 2;
         }
-
+        
         repaint();
     }
 
