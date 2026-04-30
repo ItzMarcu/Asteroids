@@ -271,17 +271,6 @@ public class Asteroid extends Entity {
     private Size getSize() { return this.size; }
 
     /**
-     * get\()
-     * 
-     * return type: double; 
-     * 
-     * @param radius
-     * @return
-     */
-
-
-
-    /**
      * generateRandomVelocity(double radius) 
      * 
      * return type: Vector2D 

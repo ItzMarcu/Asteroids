@@ -10,19 +10,21 @@ public class Bullet extends Entity {
    private int framesLeft;
 
    public Bullet(Vector2D position, Vector2D velocity){
-     super(position,velocity,RAGGIO);
-     framesLeft = LIFETIME;        
+      super(position,velocity,RAGGIO);
+      framesLeft = LIFETIME;        
    }
 
    @Override
    public void update(int width, int height){
-          move();
-          framesLeft --;
-          if (framesLeft == 0){
-             destroy();
-             return;
-          }
-         wrapAround(width , height);
+      move();
+      framesLeft --;
+      
+      if (framesLeft == 0){
+         destroy();
+         return;
+      }
+      
+      wrapAround(width , height);
    }
 
    @Override
