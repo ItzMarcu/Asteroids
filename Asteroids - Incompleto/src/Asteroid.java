@@ -147,7 +147,7 @@ public class Asteroid extends Entity {
         int y = (int) (rng.nextDouble() * screenHeight + 1);
         Vector2D position = new Vector2D(x, y);
 
-        Vector2D velocity = generateRandomVelocity(RADIUS_LARGE, SPEED_LARGE);
+        Vector2D velocity = generateRandomVelocity(SPEED_LARGE);
         
         return new Asteroid(position, velocity, Size.LARGE, RADIUS_LARGE);
     }
@@ -198,8 +198,8 @@ public class Asteroid extends Entity {
         if (actualSize == Size.LARGE) {
             return new ArrayList<Asteroid>(
                 List.of(
-                    new Asteroid(position.copy(), generateRandomVelocity(RADIUS_MEDIUM, SPEED_MEDIUM), Size.MEDIUM, RADIUS_MEDIUM), 
-                    new Asteroid(position.copy(), generateRandomVelocity(RADIUS_MEDIUM, SPEED_MEDIUM), Size.MEDIUM, RADIUS_MEDIUM)
+                    new Asteroid(position.copy(), generateRandomVelocity(SPEED_MEDIUM), Size.MEDIUM, RADIUS_MEDIUM), 
+                    new Asteroid(position.copy(), generateRandomVelocity(SPEED_MEDIUM), Size.MEDIUM, RADIUS_MEDIUM)
                 )
 
                 
@@ -209,8 +209,8 @@ public class Asteroid extends Entity {
         if (actualSize == Size.MEDIUM) {
             return new ArrayList<Asteroid>(
                 List.of(
-                    new Asteroid(position.copy(), generateRandomVelocity(RADIUS_SMALL, SPEED_SMALL), Size.SMALL, RADIUS_SMALL), 
-                    new Asteroid(position.copy(), generateRandomVelocity(RADIUS_SMALL, SPEED_SMALL), Size.SMALL, RADIUS_SMALL)
+                    new Asteroid(position.copy(), generateRandomVelocity(SPEED_SMALL), Size.SMALL, RADIUS_SMALL), 
+                    new Asteroid(position.copy(), generateRandomVelocity(SPEED_SMALL), Size.SMALL, RADIUS_SMALL)
                 )
             );
         }
@@ -276,7 +276,7 @@ public class Asteroid extends Entity {
      * return type: Vector2D 
      */
 
-    public static Vector2D  generateRandomVelocity(double radius, double speed) {
+    public static Vector2D  generateRandomVelocity(double speed) {
         double angle = rng.nextDouble() * 2 * Math.PI; 
         double randomVelocity = rng.nextDouble() * (speed + 1);
 
