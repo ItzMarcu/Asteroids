@@ -74,7 +74,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
     private Ship           ship;
     private List<Asteroid> asteroids;
     private List<Bullet>   bullets;
-
+    
     private int     score;
     private int     lives;
     private int     level;
@@ -237,10 +237,10 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
             else
                 actual.update(WIDTH, HEIGHT);
         }
-
+        
         Iterator<Bullet> bulletsIterator = bullets.iterator(); 
         List<Bullet> bulletsToRemove = new ArrayList<>();
-
+        
         while (bulletsIterator.hasNext()) { 
             Bullet actual = bulletsIterator.next(); 
             if (!actual.isAlive()) 
@@ -248,7 +248,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
             else
                 actual.update(WIDTH, HEIGHT);
         }
-
+        
         asteroids.removeAll(asteroidsToRemove);
         bullets.removeAll(bulletsToRemove);
         

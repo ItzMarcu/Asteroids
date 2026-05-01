@@ -60,7 +60,6 @@ public class Asteroid extends Entity {
     private final Size           size;
     private final List<Vector2D> customShape;
     private final Vector2D       position; 
-    //private final Vector2D       velocity; 
     private static final double         RADIUS_LARGE  = 40; 
     private static final double         RADIUS_MEDIUM = 22;
     private static final double         RADIUS_SMALL  = 12; 
