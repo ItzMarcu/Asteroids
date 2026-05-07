@@ -1,4 +1,4 @@
-# Progetto Asteroids - Java Swing
+# Progetto Asteroids 
 
 Un'implementazione del classico gioco arcade **Asteroids** sviluppata in Java. Il progetto utilizza un'architettura a oggetti per gestire entità dinamiche, collisioni e logica di gioco in tempo reale.
 
@@ -28,10 +28,9 @@ Il codice è suddiviso in diverse classi, ognuna con una responsabilità specifi
 
 ## 🚧 Note sullo Sviluppo: Classe Enemy.java
 La classe `Enemy.java` è attualmente presente come bozza e richiede i seguenti interventi per essere funzionale:
-1. **Correzione Sintassi**: Sistemare l'inizializzazione della lista nel metodo `getShape` (attualmente presenta errori di digitazione come `vector2D` e assegnazioni incomplete).
-2. **IA di Movimento**: Implementare una logica nel metodo `update` per muovere il nemico in modo imprevedibile.
-3. **Puntamento**: Affinare il metodo `shoot` per sparare in direzione del giocatore.
-4. **Integrazione**: Inserire la gestione della lista `Enemy` all'interno dei cicli di aggiornamento e collisione di `GameArea.java`.
+1. **IA di Movimento**: Implementare una logica nel metodo `update` per muovere il nemico in modo imprevedibile.
+2. **Puntamento**: Affinare il metodo `shoot` per sparare in direzione del giocatore.
+3. **Integrazione**: Inserire la gestione della lista `Enemy` all'interno dei cicli di aggiornamento e collisione di `GameArea.java`.
 
 ## 📈 Meccaniche Implementate
 - **Wrapping dello schermo**: Tutte le entità che escono dai bordi riappaiono dal lato opposto.
