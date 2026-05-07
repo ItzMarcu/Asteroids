@@ -42,7 +42,7 @@ public class Enemy extends Entity {
 
     public List<vector2D> getShape() { 
         return new ArrayList<Vector2D> = new ArrayList<>(
-            new vector2D(0, rng.randInt(20, 25)),
+            new Vector2D(0, rng.randInt(20, 25)),
             new Vector2D(0, -rng.randInt(20, 25)), 
             new Vector2D(rng.randInt(20, 25), 0), 
             new Vector2D(-rng.randInt(20, 25), 0)
