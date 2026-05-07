@@ -5,11 +5,6 @@ import java.util.List;
 import java.util.Iterator;
 import javax.swing.*;
 
-// TODO: 
-/**
- * 1) sistemare il level up!
-*/
-
 /**
  * ═══════════════════════════════════════════════════════════════════
  *  CLASSE DA IMPLEMENTARE — GameArea (l'area di gioco)
