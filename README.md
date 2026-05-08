@@ -2,9 +2,7 @@
 
 Un'implementazione del classico gioco arcade **Asteroids** sviluppata in Java. Il progetto utilizza un'architettura a oggetti per gestire entità dinamiche, collisioni e logica di gioco in tempo reale.
 
-![image](
-  <img width="844" height="660" alt="Schermata del 2026-05-08 02-25-14" src="https://github.com/user-attachments/assets/4deba7e5-1de5-490f-bcf1-7f33c71f006a" />
-)
+![image](https://github.com/user-attachments/assets/4deba7e5-1de5-490f-bcf1-7f33c71f006a)
 
 ## 🛠️ Struttura del Progetto
 
