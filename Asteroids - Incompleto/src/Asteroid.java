@@ -286,4 +286,5 @@ public class Asteroid extends Entity {
 
         return velocity; 
     }
+
 }

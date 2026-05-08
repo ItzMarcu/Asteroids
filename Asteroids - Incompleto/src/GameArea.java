@@ -69,7 +69,10 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
     private Ship           ship;
     private List<Asteroid> asteroids;
     private List<Bullet>   bullets;
+    private List<Enemy>    enemies; // da discutere
     
+    private int     ASTEROIDS_START;
+    private int     ENEMIES_START; // da discutere
     private int     score;
     private int     lives;
     private int     level;
@@ -81,7 +84,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
     private final int     HEIGHT = 600;
     private final int     FPS = 60;
     private final int     INITIAL_LIVES = 3;
-    private int     ASTEROIDS_START;
+
 
     private final Timer timer;
     /*
@@ -109,6 +112,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
 
         asteroids = new ArrayList<Asteroid>();
         bullets = new ArrayList<Bullet>(); 
+        enemies = new ArrayList<Enemy>();
         
         timer = new Timer(1000 / FPS, this);
         startGame(); 
@@ -133,6 +137,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
 
     private void startGame() {
         ASTEROIDS_START = 4;
+        ENEMIES_START = 0; // da discutere
         damageable = 0;
         score =    0;
         lives =    INITIAL_LIVES;
@@ -143,6 +148,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
         ship = new Ship(WIDTH, HEIGHT);
         bullets.clear(); // .clear() -> svuota una lista
         asteroids.clear();
+        enemies.clear();
 
         spawnAsteroids(ASTEROIDS_START);
         timer.start();
@@ -175,6 +181,17 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
         }
     }
 
+    public void spawnEnemies(int count) {
+        while (enemies.size() < count) {
+            Enemy randomEnemy = Enemy.spawnRandom(WIDTH, HEIGHT);
+
+            if (Vector2D.distance(randomEnemy.getPosition(), ship.getPosition()) < 150) 
+                randomEnemy = Enemy.spawnRandom(WIDTH, HEIGHT); 
+            else 
+                enemies.add(randomEnemy); 
+        }
+    }
+
 
     /*
      * ── void actionPerformed(ActionEvent e) ───────────────────────────
@@ -196,10 +213,15 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
             checkCollisions(); 
         }
         
-        if (asteroids.isEmpty()) {
+        if (asteroids.isEmpty() && enemies.isEmpty()) {
             level++;
             ASTEROIDS_START += 2;
             spawnAsteroids(ASTEROIDS_START);
+
+            if (level % 2 == 0) {
+                ENEMIES_START++; 
+                spawnEnemies(ENEMIES_START);
+            }
         }
         
         repaint();
@@ -243,9 +265,21 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
             else
                 actual.update(WIDTH, HEIGHT);
         }
+
+        Iterator<Enemy> enemiesIterator = enemies.iterator(); 
+        List<Enemy> enemiesToRemove = new ArrayList<>(); 
+
+        while (enemiesIterator.hasNext()) {
+            Enemy actual = enemiesIterator.next(); 
+            if (!actual.isAlive())
+                enemiesToRemove.add(actual); 
+            else
+                actual.update(WIDTH, HEIGHT);
+        }
         
         asteroids.removeAll(asteroidsToRemove);
         bullets.removeAll(bulletsToRemove);
+        enemies.removeAll(enemiesToRemove);
         
         if (damageable > 0 ) damageable--;  
         if (damageable == 0) ship.setColor(Color.WHITE);
@@ -305,9 +339,30 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
 
                     break; 
                 }
-
             }    
         }
+
+        bullettsIterator = bullets.iterator(); 
+        
+        while (bullettsIterator.hasNext()) {
+            Bullet b = bullettsIterator.next(); 
+            Iterator<Enemy> enemiesIterator = enemies.iterator(); 
+            
+            while (enemiesIterator.hasNext()) {
+                Enemy e = enemiesIterator.next(); 
+
+                if (!e.isAlive()) continue; 
+
+                if (b.collidesWith(e)) {
+                    b.destroy();
+                    e.destroy();
+
+                    score += e.getScore(); 
+                    break; 
+                }
+            }
+        }
+
 
         for (Asteroid a : asteroids) {
             if (ship.collidesWith(a)) {
@@ -322,6 +377,23 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
                     ship.setColor(Color.YELLOW);
     
                     break;
+                }
+            }
+        }
+
+        for (Enemy e : enemies) {
+            if (ship.collidesWith(e)) {
+                if (damageable == 0) { 
+                    lives--; 
+                    if (lives <= 0) {
+                        gameOver = true; 
+                        return; 
+                    }
+
+                    damageable = 120; 
+                    ship.setColor(Color.YELLOW); 
+
+                    break; 
                 }
             }
         }
@@ -348,6 +420,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
         ship.draw(g);
         for (Asteroid a : asteroids) a.draw(g);
         for (Bullet   b : bullets)   b.draw(g);
+        for (Enemy    e : enemies)   e.draw(g);
 
         drawHUD(g);
         if (paused) drawPaused(g);
@@ -394,7 +467,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
                 }
                 break;
             case KeyEvent.VK_P: paused = !paused; break;
-            case KeyEvent.VK_R: startGame();       break;
+            case KeyEvent.VK_R: startGame();      break;
         }
     }
 
