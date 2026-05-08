@@ -28,9 +28,7 @@ Il codice è suddiviso in diverse classi, ognuna con una responsabilità specifi
 
 ## 🚧 Note sullo Sviluppo: Classe Enemy.java
 La classe `Enemy.java` è attualmente presente come bozza e richiede i seguenti interventi per essere funzionale:
-1. **IA di Movimento**: Implementare una logica nel metodo `update` per muovere il nemico in modo imprevedibile.
-2. **Puntamento**: Affinare il metodo `shoot` per sparare in direzione del giocatore.
-3. **Integrazione**: Inserire la gestione della lista `Enemy` all'interno dei cicli di aggiornamento e collisione di `GameArea.java`.
+1. **Puntamento**: Affinare il metodo `shoot` per sparare in direzione del giocatore.
 
 ## 📈 Meccaniche Implementate
 - **Wrapping dello schermo**: Tutte le entità che escono dai bordi riappaiono dal lato opposto.
