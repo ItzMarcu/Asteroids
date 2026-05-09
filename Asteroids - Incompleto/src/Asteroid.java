@@ -165,6 +165,7 @@ public class Asteroid extends Entity {
      * Nota: gli asteroidi non cambiano mai velocità da soli.
      */
 
+    @Override
     public void update(int width, int height) {
         move(); 
         wrapAround(width, height);
@@ -195,7 +196,7 @@ public class Asteroid extends Entity {
         Size actualSize = getSize();
 
         if (actualSize == Size.LARGE) {
-            return new ArrayList<Asteroid>(
+            return new ArrayList<>(
                 List.of(
                     new Asteroid(position.copy(), generateRandomVelocity(SPEED_MEDIUM), Size.MEDIUM, RADIUS_MEDIUM), 
                     new Asteroid(position.copy(), generateRandomVelocity(SPEED_MEDIUM), Size.MEDIUM, RADIUS_MEDIUM)
@@ -206,7 +207,7 @@ public class Asteroid extends Entity {
         }
 
         if (actualSize == Size.MEDIUM) {
-            return new ArrayList<Asteroid>(
+            return new ArrayList<>(
                 List.of(
                     new Asteroid(position.copy(), generateRandomVelocity(SPEED_SMALL), Size.SMALL, RADIUS_SMALL), 
                     new Asteroid(position.copy(), generateRandomVelocity(SPEED_SMALL), Size.SMALL, RADIUS_SMALL)
@@ -228,14 +229,10 @@ public class Asteroid extends Entity {
 
     public double getScore() { 
         switch (getSize()) {
-            case Size.LARGE:
-                return SCORE_LARGE; 
-            case Size.MEDIUM: 
-                return SCORE_MEDIUM; 
-            case Size.SMALL: 
-                return SCORE_SMALL; 
-            default:
-                return 0;
+            case Size.LARGE: return SCORE_LARGE;
+            case Size.MEDIUM: return SCORE_MEDIUM;
+            case Size.SMALL: return SCORE_SMALL;
+            default: return 0; 
         }
     }
 
@@ -249,6 +246,7 @@ public class Asteroid extends Entity {
      * Il sistema di coordinate è relativo al centro (0,0).
      */
 
+    @Override
     public List<Vector2D> getShape() { return this.customShape; }
 
 
@@ -259,6 +257,7 @@ public class Asteroid extends Entity {
      *
      */
 
+    @Override
     public Color getColor() { return Color.WHITE; }
 
     /**

@@ -1,10 +1,9 @@
-import java.awt.*; 
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.List; 
-import java.util.ArrayList; 
 import java.util.Random;
 
 public class Enemy extends Entity { 
-    private Vector2D shape; 
     private double   angle; 
     private int      shootTimer;  
     
@@ -33,6 +32,7 @@ public class Enemy extends Entity {
         return new Bullet(new Vector2D(bx, by), new Vector2D(vx, vy)); 
     }
 
+    @Override
     public void update(int width, int height) {
         move();
         wrapAround(width, height);
@@ -40,8 +40,9 @@ public class Enemy extends Entity {
         if (shootTimer > 0) shootTimer--; 
     }
 
+    @Override
     public List<Vector2D> getShape() { 
-        return new ArrayList<Vector2D>(
+        return new ArrayList<>(
             List.of(
                 new Vector2D(0, rng.nextInt(20, 25)),
                 new Vector2D(0, -rng.nextInt(20, 25)), 
@@ -51,6 +52,7 @@ public class Enemy extends Entity {
         ); 
     }
 
+    @Override
     public Color getColor() { return Color.GREEN; }
 
     public int getScore() { return ENEMY_SCORE; }
@@ -64,7 +66,7 @@ public class Enemy extends Entity {
             Math.sin(angle) * randomVelocity
         ); 
 
-        return velocity; 
+        return velocity;
     }
 
     public static Enemy spawnRandom(int screenWidth, int screenHeight) {
