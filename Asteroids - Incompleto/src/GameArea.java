@@ -203,7 +203,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
      *     4. Chiamare repaint()  → ridisegna lo schermo
      */
 
-     @Override
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (!paused && !gameOver) {
             updateEntities();
@@ -465,7 +465,6 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
                 break;
             case KeyEvent.VK_P: paused = !paused; break;
             case KeyEvent.VK_R: startGame();      break;
-            case KeyEvent.VK_E: levelUp();        break;
         }
     }
 
