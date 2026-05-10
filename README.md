@@ -1,4 +1,4 @@
-# Progetto Asteroids 
+# Asteroids 
 
 Un'implementazione del classico gioco arcade **Asteroids** sviluppata in Java. Il progetto utilizza un'architettura a oggetti per gestire entità dinamiche, collisioni e logica di gioco in tempo reale.
 
