@@ -81,8 +81,8 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
     private boolean gameOver;
     private boolean paused;
 
-    private final int     WIDTH = 800;
-    private final int     HEIGHT = 600;
+    private final int     WIDTH = 1280;
+    private final int     HEIGHT = 720;
     private final int     FPS = 60;
     private final int     INITIAL_LIVES = 3;
 
@@ -138,7 +138,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
      */
 
     private void startGame() {
-        ASTEROIDS_START = 1; //4
+        ASTEROIDS_START = 4; //4
         ENEMIES_START = 0; // da discutere
         damageable = 0;
         score =    0;
@@ -438,11 +438,6 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
         updateEntities();
     }
 
-    private void levelUp() { 
-        asteroids.clear(); 
-        enemies.clear();
-    }
-
     // ═══════════════════════════════════════════════════════════════
     // RENDERING — già implementato, non modificare
     // ═══════════════════════════════════════════════════════════════
@@ -508,7 +503,6 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
                 break;
             case KeyEvent.VK_P: paused = !paused; break;
             case KeyEvent.VK_R: startGame();      break;
-            case KeyEvent.VK_E: levelUp();        break;
         }
     }
 

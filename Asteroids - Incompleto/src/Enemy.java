@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Random;
 
 public class Enemy extends Entity { 
-    private double   angle; 
     private int      shootTimer;  
     
     private static final Random rng = new Random(); 
