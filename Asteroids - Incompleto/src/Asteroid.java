@@ -164,7 +164,6 @@ public class Asteroid extends Entity {
      *
      * Nota: gli asteroidi non cambiano mai velocità da soli.
      */
-
     @Override
     public void update(int width, int height) {
         move(); 
@@ -245,7 +244,6 @@ public class Asteroid extends Entity {
      * Restituire i vertici che danno fomra all' asteroide.
      * Il sistema di coordinate è relativo al centro (0,0).
      */
-
     @Override
     public List<Vector2D> getShape() { return this.customShape; }
 
@@ -256,7 +254,6 @@ public class Asteroid extends Entity {
      * Output: Color
      *
      */
-
     @Override
     public Color getColor() { return Color.WHITE; }
 

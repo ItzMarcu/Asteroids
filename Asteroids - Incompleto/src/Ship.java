@@ -1,6 +1,6 @@
 import java.awt.*;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ═══════════════════════════════════════════════════════════════════
@@ -57,7 +57,7 @@ public class Ship extends Entity {
     private static final int RADIUS = 15;
     private static final double ROTATION_SPEED = 0.07;
     private static final double THRUST_POWER = 0.25;
-    private static final double FRICTION = 0.5;
+    private static final double FRICTION = 0.98;
     private static final double MAX_SPEED = 6.0;
     private static final int BULLET_COOLDOWN = 15;
     
@@ -112,12 +112,22 @@ public class Ship extends Entity {
         //2 + 3 + 4
         if (thrusting)
             getVelocity().add(new Vector2D(Math.cos(angle) * THRUST_POWER, Math.sin(angle) * THRUST_POWER));
-        else 
-            getVelocity().scale(FRICTION);
+        // else 
+        getVelocity().scale(FRICTION);
         
         //4 DA CAPIRE SE USARE QUESTO
-        if (getVelocity().length() > MAX_SPEED)
-            getVelocity().scale(FRICTION); // MAX_SPEED = 6 (4)
+         /* if (getVelocity().length() > MAX_SPEED){
+             // MAX_SPEED = 6 (4)
+            getVelocity().scale(FRICTION);
+        } */
+       double len = getVelocity().length();
+
+        if (len > MAX_SPEED) {
+            getVelocity().x = (getVelocity().x / len) * MAX_SPEED;
+            getVelocity().y = (getVelocity().y / len) * MAX_SPEED;
+        }
+ 
+        //System.out.println(getVelocity().length());
         //5
         move();
 

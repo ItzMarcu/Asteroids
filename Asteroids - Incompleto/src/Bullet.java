@@ -1,6 +1,6 @@
 import java.awt.*;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Bullet extends Entity {
 
@@ -29,7 +29,7 @@ public class Bullet extends Entity {
 
    @Override
    public List<Vector2D> getShape(){
-      return new ArrayList<Vector2D>(List.of(
+      return new ArrayList<>(List.of(
       new Vector2D(-3, -3),
       new Vector2D(3, -3),
       new Vector2D(3, 3),
@@ -37,7 +37,12 @@ public class Bullet extends Entity {
       )); 
    }
 
-
+   @Override
    public Color getColor(){ return Color.RED; }
+
+   //serve per i proiettili nemici
+   public void setframesLeft(int frames) {
+      this.framesLeft = frames;
+   }
 
 }
