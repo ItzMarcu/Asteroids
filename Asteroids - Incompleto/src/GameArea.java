@@ -349,7 +349,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
                 if (!a.isAlive()) continue; 
 
                 if (b.collidesWith(a)) {
-                    b.destroy();
+                    if (b.isDestroyable()) b.destroy();
                     a.destroy();
                     score += a.getScore(); 
 
@@ -499,15 +499,12 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
             case KeyEvent.VK_UP:    case KeyEvent.VK_W: ship.setThrusting(true);    break;
             case KeyEvent.VK_SPACE:
                 if (!gameOver && !paused) {
-                    Bullet b;
-                     if(ship.getFatBulletTimer() > 0){ b= ship.shootFat();}
-                     else{b = ship.shoot();}
-                        
+                    Bullet b = ship.shoot();
                     if (b != null) bullets.add(b);
                 }
                 break;
 
-            case KeyEvent.VK_Q:  ship.PowerUpFatBullet(); break; 
+            case KeyEvent.VK_Q:  ship.activatePowerUp(); break; 
             case KeyEvent.VK_P: paused = !paused; break;
             case KeyEvent.VK_R: startGame();      break;
         }

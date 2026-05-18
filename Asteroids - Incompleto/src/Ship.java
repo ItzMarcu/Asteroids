@@ -52,6 +52,7 @@ public class Ship extends Entity {
     private boolean   thrusting;
     private boolean   turningLeft;
     private boolean   turningRight;
+    private boolean   powerUp;
     private int       shootTimer;
     private Color     color;
     private static final int RADIUS = 15;
@@ -60,9 +61,6 @@ public class Ship extends Entity {
     private static final double FRICTION = 0.98;
     private static final double MAX_SPEED = 6.0;
     private static final int BULLET_COOLDOWN = 15;
-    private static final double FATBULLETRADIUS = 10.0;
-    private static final int FATBULLETLIFETIME = 490;
-    private int FatBulletTimer = 0;
     
     /*
      * ── COSTRUTTORE ───────────────────────────────────────────────
@@ -85,6 +83,7 @@ public class Ship extends Entity {
         this.angle = -Math.PI / 2;
         this.shootTimer = 0;
         this.color = Color.PINK;
+        this.powerUp = false;
     }
     
 
@@ -138,11 +137,8 @@ public class Ship extends Entity {
         wrapAround(width, height);
 
         //7
-        if (shootTimer > 0) {
-            shootTimer -= 1;
-        }
-        if (FatBulletTimer > 0){ FatBulletTimer --;}
-            
+        if (shootTimer > 0) 
+            shootTimer--;
     } 
 
     /*
@@ -179,8 +175,8 @@ public class Ship extends Entity {
      *  7. COOLDOWN SPARO
      */
 
-    public void PowerUpFatBullet(){ FatBulletTimer = FATBULLETLIFETIME;} 
-
+    public void activatePowerUp() { powerUp = true; }
+    
     public Bullet shoot(){
         if (shootTimer > 0) {
             return null;
@@ -195,24 +191,7 @@ public class Ship extends Entity {
             shootTimer = BULLET_COOLDOWN;
 
             Bullet bullet = new Bullet(new Vector2D(bx, by), new Vector2D(vx, vy));
-            return bullet;
-        }
-    }
-
-    public Bullet shootFat(){
-        if (shootTimer > 0) {
-            return null;
-        }
-        else {
-            double bx = getPosition().x + Math.cos(angle) * RADIUS;
-            double by = getPosition().y + Math.sin(angle) * RADIUS;
-
-            double vx = Math.cos(angle) * Bullet.BULLET_SPEED + getVelocity().x;
-            double vy = Math.sin(angle) * Bullet.BULLET_SPEED + getVelocity().y;
-             
-            shootTimer = BULLET_COOLDOWN;
-
-            Bullet bullet = new Bullet(new Vector2D(bx, by), new Vector2D(vx, vy), FATBULLETRADIUS );
+            if (powerUp) bullet.bulletPowerUp();
             return bullet;
         }
     }
@@ -271,7 +250,6 @@ public class Ship extends Entity {
     @Override
     public double getAngle() { return angle; }
 
-    public int getFatBulletTimer() { return FatBulletTimer; }
 
     /*
      * ── getAngle() ───────────────────────────────────────────────
