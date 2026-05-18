@@ -1,8 +1,8 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 import javax.swing.*;
 
 /**
@@ -70,6 +70,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
     private List<Asteroid> asteroids;
     private List<Bullet>   bullets;
     private List<Enemy>    enemies; // da discutere
+    private List<Bullet>   bEnemies;
     
     private int     ASTEROIDS_START;
     private int     ENEMIES_START; // da discutere
@@ -81,8 +82,8 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
     private boolean paused;
     
 
-    private final int     WIDTH = 800;
-    private final int     HEIGHT = 600;
+    private final int     WIDTH = 1280;
+    private final int     HEIGHT = 720;
     private final int     FPS = 60;
     private final int     INITIAL_LIVES = 3;
 
@@ -114,6 +115,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
         asteroids = new ArrayList<Asteroid>();
         bullets = new ArrayList<Bullet>(); 
         enemies = new ArrayList<Enemy>();
+        bEnemies= new ArrayList<Bullet>();
         
         timer = new Timer(1000 / FPS, this);
         startGame(); 
@@ -137,7 +139,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
      */
 
     private void startGame() {
-        ASTEROIDS_START = 4;
+        ASTEROIDS_START = 4; //4
         ENEMIES_START = 0; // da discutere
         damageable = 0;
         score =    0;
@@ -150,6 +152,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
         bullets.clear(); // .clear() -> svuota una lista
         asteroids.clear();
         enemies.clear();
+        bEnemies.clear();
 
         spawnAsteroids(ASTEROIDS_START);
         timer.start();
@@ -175,10 +178,8 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
     public void spawnAsteroids(int count) {
         while (asteroids.size() < count) { 
             Asteroid randomAsteroid = Asteroid.spawnRandom(WIDTH, HEIGHT); 
-            if (Vector2D.distance(randomAsteroid.getPosition(), ship.getPosition()) < 150) 
-                randomAsteroid = Asteroid.spawnRandom(WIDTH, HEIGHT); 
-            else 
-                asteroids.add(randomAsteroid); 
+            if (Vector2D.distance(randomAsteroid.getPosition(), ship.getPosition()) > 150) 
+                asteroids.add(randomAsteroid);
         }
     }
 
@@ -186,11 +187,9 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
         while (enemies.size() < count) {
             Enemy randomEnemy = Enemy.spawnRandom(WIDTH, HEIGHT);
 
-            if (Vector2D.distance(randomEnemy.getPosition(), ship.getPosition()) < 150) 
-                randomEnemy = Enemy.spawnRandom(WIDTH, HEIGHT); 
-            else 
-                enemies.add(randomEnemy); 
-        }
+            if (Vector2D.distance(randomEnemy.getPosition(), ship.getPosition()) > 150) 
+                enemies.add(randomEnemy);
+        }  
     }
 
 
@@ -208,6 +207,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
      *     4. Chiamare repaint()  → ridisegna lo schermo
      */
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (!paused && !gameOver) {
             updateEntities();
@@ -272,16 +272,37 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
         List<Enemy> enemiesToRemove = new ArrayList<>(); 
 
         while (enemiesIterator.hasNext()) {
-            Enemy actual = enemiesIterator.next(); 
+            Enemy actual = enemiesIterator.next();
+            
             if (!actual.isAlive())
                 enemiesToRemove.add(actual); 
+            else {
+                Bullet bul = actual.shoot(ship);
+                if (bul != null)
+                    bEnemies.add(bul);
+                
+                actual.update(WIDTH, HEIGHT);
+                
+            }
+                
+        }
+        
+        Iterator<Bullet> bulEnemiesIterator = bEnemies.iterator(); 
+        List<Bullet> bulEnemiesToRemove = new ArrayList<>();
+        
+        while (bulEnemiesIterator.hasNext()) { 
+            Bullet actual = bulEnemiesIterator.next(); 
+            if (!actual.isAlive()) 
+                bulEnemiesToRemove.add(actual);
             else
                 actual.update(WIDTH, HEIGHT);
         }
+
         
         asteroids.removeAll(asteroidsToRemove);
         bullets.removeAll(bulletsToRemove);
         enemies.removeAll(enemiesToRemove);
+        bEnemies.removeAll(bulEnemiesToRemove);
         
         if (damageable > 0 ) damageable--;  
         if (damageable == 0) ship.setColor(Color.WHITE);
@@ -323,37 +344,32 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
         
         while (bullettsIterator.hasNext()) { 
             Bullet b = bullettsIterator.next(); 
-            Iterator<Asteroid> asteroidsIterator = asteroids.iterator();
 
-            while (asteroidsIterator.hasNext()) {
-                Asteroid a = asteroidsIterator.next(); 
+            for (Asteroid a : asteroids) {
+                if (!a.isAlive()) continue; 
 
-                if (!a.isAlive()) continue;  
-                
-                if (b.collidesWith(a)) { 
-                    a.destroy(); 
-                    b.destroy(); 
-                    score += a.getScore();
-                    
-                    List<Asteroid> buffer = a.split(); 
-                    if (!buffer.isEmpty())
+                if (b.collidesWith(a)) {
+                    b.destroy();
+                    a.destroy();
+                    score += a.getScore(); 
+
+                    List<Asteroid> buffer = a.split();
+                    if (!buffer.isEmpty()) 
                         newAsteroids.addAll(buffer);
 
                     break; 
                 }
-            }    
+            }
         }
 
         bullettsIterator = bullets.iterator(); 
         
         while (bullettsIterator.hasNext()) {
             Bullet b = bullettsIterator.next(); 
-            Iterator<Enemy> enemiesIterator = enemies.iterator(); 
             
-            while (enemiesIterator.hasNext()) {
-                Enemy e = enemiesIterator.next(); 
-
+            for (Enemy e : enemies) {
                 if (!e.isAlive()) continue; 
+                if (!b.isAlive()) continue; 
 
                 if (b.collidesWith(e)) {
                     b.destroy();
@@ -399,6 +415,24 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
                 }
             }
         }
+
+        for (Bullet b : bEnemies) {
+            if (ship.collidesWith(b)){
+                if (damageable == 0) { 
+                    lives--;
+                    b.destroy();
+                    if (lives <= 0) {
+                        gameOver = true; 
+                        return; 
+                    }
+
+                    damageable = 120; 
+                    ship.setColor(Color.YELLOW); 
+
+                    break;
+                }
+            }
+        }
         
         asteroids.addAll(newAsteroids);
         newAsteroids.clear();
@@ -423,6 +457,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
         for (Asteroid a : asteroids) a.draw(g);
         for (Bullet   b : bullets)   b.draw(g);
         for (Enemy    e : enemies)   e.draw(g);
+        for (Bullet   bE : bEnemies) bE.draw(g);
 
         drawHUD(g);
         if (paused) drawPaused(g);

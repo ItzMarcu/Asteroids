@@ -1,4 +1,4 @@
-# Progetto Asteroids 
+# Asteroids 
 
 Un'implementazione del classico gioco arcade **Asteroids** sviluppata in Java. Il progetto utilizza un'architettura a oggetti per gestire entità dinamiche, collisioni e logica di gioco in tempo reale.
 
@@ -28,9 +28,9 @@ Il codice è suddiviso in diverse classi, ognuna con una responsabilità specifi
 - **P**: Mette il gioco in pausa.
 - **R**: Riavvia la partita dopo un Game Over.
 
-## 🚧 Note sullo Sviluppo: Classe Enemy.java
-La classe `Enemy.java` è attualmente presente come bozza e richiede i seguenti interventi per essere funzionale:
-1. **Puntamento**: Affinare il metodo `shoot` per sparare in direzione del giocatore.
+## 🚧 Note sullo Sviluppo: 
+
+- **Introduzione e sviluppo** di proiettili speciali
 
 ## 📈 Meccaniche Implementate
 - **Wrapping dello schermo**: Tutte le entità che escono dai bordi riappaiono dal lato opposto.

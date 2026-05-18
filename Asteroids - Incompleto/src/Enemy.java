@@ -1,47 +1,58 @@
-import java.awt.*; 
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.List; 
-import java.util.ArrayList; 
 import java.util.Random;
 
 public class Enemy extends Entity { 
-    private Vector2D shape; 
-    private double   angle; 
     private int      shootTimer;  
     
     private static final Random rng = new Random(); 
     private static final double ENEMY_VELOCITY = 2.0; 
     private static final double ENEMY_RADIUS = 25.0; 
-    private static final int    BULLET_COOLDOWN = 60;
+    private static final int    BULLET_COOLDOWN = 120;
     private static final int    ENEMY_SCORE = 75; 
 
     public Enemy(Vector2D position, Vector2D velocity, double radius) {
         super(position, velocity, radius); 
+        //this.angle = -Math.PI / 2; //dffd
         this.shootTimer = 0; 
     }
 
-    public Bullet shoot() {
-        if (shootTimer > 0)
-            return null; 
-        
-        double bx = getPosition().x + Math.cos(angle) * ENEMY_RADIUS; 
-        double by = getPosition().y + Math.sin(angle) * ENEMY_RADIUS; 
-
-        double vx = Math.cos(angle) * Bullet.BULLET_SPEED; 
-        double vy = Math.sin(angle) * Bullet.BULLET_SPEED; 
-
-        shootTimer = BULLET_COOLDOWN; 
-        return new Bullet(new Vector2D(bx, by), new Vector2D(vx, vy)); 
-    }
-
+    
+    @Override
     public void update(int width, int height) {
         move();
         wrapAround(width, height);
-
         if (shootTimer > 0) shootTimer--; 
     }
+    public Bullet shoot(Ship ship) {
+        if (shootTimer > 0)
+            return null; 
+        else {
+            
+            double angle = Math.atan2((ship.getPosition().y - getPosition().y), (ship.getPosition().x - getPosition().x));
+            System.out.println(angle);
+            //angle = Math.abs(angle);
+            //System.out.println("Sparo");
+            double bx = getPosition().x + Math.cos(angle) * ENEMY_RADIUS; 
+            double by = getPosition().y + Math.sin(angle) * ENEMY_RADIUS;
+            //System.out.println(bx);
 
+            double vx = Math.cos(angle) * 3; //+ getVelocity().x;
+            double vy = Math.sin(angle) * 3; //+ getVelocity().y;
+
+            shootTimer = BULLET_COOLDOWN; 
+            Bullet b = new Bullet(new Vector2D(bx, by), new Vector2D(vx, vy));
+            b.setframesLeft(120);
+            //System.out.println(b.getVelocity());
+            return b;
+        }
+        
+         
+    }
+    @Override
     public List<Vector2D> getShape() { 
-        return new ArrayList<Vector2D>(
+        return new ArrayList<>(
             List.of(
                 new Vector2D(0, rng.nextInt(20, 25)),
                 new Vector2D(0, -rng.nextInt(20, 25)), 
@@ -50,7 +61,7 @@ public class Enemy extends Entity {
             )
         ); 
     }
-
+    @Override
     public Color getColor() { return Color.GREEN; }
 
     public int getScore() { return ENEMY_SCORE; }
@@ -64,7 +75,7 @@ public class Enemy extends Entity {
             Math.sin(angle) * randomVelocity
         ); 
 
-        return velocity; 
+        return velocity;
     }
 
     public static Enemy spawnRandom(int screenWidth, int screenHeight) {
