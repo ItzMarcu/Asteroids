@@ -79,6 +79,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
     private int     damageable; 
     private boolean gameOver;
     private boolean paused;
+    
 
     private final int     WIDTH = 800;
     private final int     HEIGHT = 600;
@@ -210,7 +211,8 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
     public void actionPerformed(ActionEvent e) {
         if (!paused && !gameOver) {
             updateEntities();
-            checkCollisions(); 
+            checkCollisions();
+            
         }
         
         if (asteroids.isEmpty() && enemies.isEmpty()) {
@@ -401,7 +403,7 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
         asteroids.addAll(newAsteroids);
         newAsteroids.clear();
         
-        updateEntities();
+       updateEntities();
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -462,10 +464,15 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
             case KeyEvent.VK_UP:    case KeyEvent.VK_W: ship.setThrusting(true);    break;
             case KeyEvent.VK_SPACE:
                 if (!gameOver && !paused) {
-                    Bullet b = ship.shoot();
+                    Bullet b;
+                     if(ship.getFatBulletTimer() > 0){ b= ship.shootFat();}
+                     else{b = ship.shoot();}
+                        
                     if (b != null) bullets.add(b);
                 }
                 break;
+
+            case KeyEvent.VK_Q:  ship.PowerUpFatBullet(); break; 
             case KeyEvent.VK_P: paused = !paused; break;
             case KeyEvent.VK_R: startGame();      break;
         }

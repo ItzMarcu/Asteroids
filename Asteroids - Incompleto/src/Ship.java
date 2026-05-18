@@ -1,6 +1,6 @@
 import java.awt.*;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ═══════════════════════════════════════════════════════════════════
@@ -60,6 +60,9 @@ public class Ship extends Entity {
     private static final double FRICTION = 0.5;
     private static final double MAX_SPEED = 6.0;
     private static final int BULLET_COOLDOWN = 15;
+    private static final double FATBULLETRADIUS = 10.0;
+    private static final int FATBULLETLIFETIME = 490;
+    private int FatBulletTimer = 0;
     
     /*
      * ── COSTRUTTORE ───────────────────────────────────────────────
@@ -81,7 +84,7 @@ public class Ship extends Entity {
         super( new Vector2D(screenWidth/2,screenHeight/2), new Vector2D(0, 0), RADIUS); //ricontrollare
         this.angle = -Math.PI / 2;
         this.shootTimer = 0;
-        this.color = Color.WHITE;
+        this.color = Color.PINK;
     }
     
 
@@ -128,8 +131,9 @@ public class Ship extends Entity {
         if (shootTimer > 0) {
             shootTimer -= 1;
         }
+        if (FatBulletTimer > 0){ FatBulletTimer --;}
             
-    }
+    } 
 
     /*
      * ── update(int width, int height) ────────────────────────────
@@ -165,6 +169,8 @@ public class Ship extends Entity {
      *  7. COOLDOWN SPARO
      */
 
+    public void PowerUpFatBullet(){ FatBulletTimer = FATBULLETLIFETIME;} 
+
     public Bullet shoot(){
         if (shootTimer > 0) {
             return null;
@@ -179,6 +185,24 @@ public class Ship extends Entity {
             shootTimer = BULLET_COOLDOWN;
 
             Bullet bullet = new Bullet(new Vector2D(bx, by), new Vector2D(vx, vy));
+            return bullet;
+        }
+    }
+
+    public Bullet shootFat(){
+        if (shootTimer > 0) {
+            return null;
+        }
+        else {
+            double bx = getPosition().x + Math.cos(angle) * RADIUS;
+            double by = getPosition().y + Math.sin(angle) * RADIUS;
+
+            double vx = Math.cos(angle) * Bullet.BULLET_SPEED + getVelocity().x;
+            double vy = Math.sin(angle) * Bullet.BULLET_SPEED + getVelocity().y;
+             
+            shootTimer = BULLET_COOLDOWN;
+
+            Bullet bullet = new Bullet(new Vector2D(bx, by), new Vector2D(vx, vy), FATBULLETRADIUS );
             return bullet;
         }
     }
@@ -236,6 +260,8 @@ public class Ship extends Entity {
 
     @Override
     public double getAngle() { return angle; }
+
+    public int getFatBulletTimer() { return FatBulletTimer; }
 
     /*
      * ── getAngle() ───────────────────────────────────────────────

@@ -8,10 +8,16 @@ public class Bullet extends Entity {
    private static final double RAGGIO = 3.0;
    private static final int LIFETIME = 55;
    private int framesLeft;
+  
 
    public Bullet(Vector2D position, Vector2D velocity){
       super(position,velocity,RAGGIO);
       framesLeft = LIFETIME;        
+   }
+
+   public Bullet(Vector2D position, Vector2D velocity, double radius){
+      super(position, velocity, radius);
+      framesLeft = LIFETIME;
    }
 
    @Override
