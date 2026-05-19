@@ -32,8 +32,10 @@ public class Bullet extends Entity {
          return;
       }
 
-      if (powerupTimer == 0 && !destroyable)
+      if (powerupTimer == 0 && !destroyable){
          removePowerUp();
+      }
+         
       
       wrapAround(width , height);
    }
@@ -52,11 +54,12 @@ public class Bullet extends Entity {
    public Color getColor(){ return this.color; }
    public void setColor(Color color) { this.color = color; }
 
+   //proiettile perforante
    public void bulletPowerUp() {
       setColor(Color.ORANGE);
       framesLeft = 165;
       destroyable = false;
-      powerupTimer = 300; 
+      powerupTimer = 200; 
    }
 
    public void removePowerUp() {

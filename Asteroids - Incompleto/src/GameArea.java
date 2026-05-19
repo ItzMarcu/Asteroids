@@ -80,6 +80,8 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
     private int     damageable; 
     private boolean gameOver;
     private boolean paused;
+    private int powerUpTimer;
+    private int destroyAsteroidsCounter;
     
 
     private final int     WIDTH = 1280;
@@ -147,6 +149,8 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
         level =    1;
         gameOver = false;
         paused =   false;
+        powerUpTimer = 0;
+        destroyAsteroidsCounter = 0;
 
         ship = new Ship(WIDTH, HEIGHT);
         bullets.clear(); // .clear() -> svuota una lista
@@ -244,6 +248,8 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
      */
 
     public void updateEntities() {
+        
+        
         ship.update(WIDTH, HEIGHT);
 
         Iterator<Asteroid> asteroidsIterator = asteroids.iterator(); 
@@ -304,6 +310,15 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
         enemies.removeAll(enemiesToRemove);
         bEnemies.removeAll(bulEnemiesToRemove);
         
+        if(powerUpTimer>0)
+            powerUpTimer--;
+        if(powerUpTimer == 0)
+            ship.disablePowerUp();
+
+        if (destroyAsteroidsCounter!= 0 && destroyAsteroidsCounter%3 == 0){
+            ship.activatePowerUp();
+            powerUpTimer = 200;
+        }
         if (damageable > 0 ) damageable--;  
         if (damageable == 0) ship.setColor(Color.WHITE);
 
@@ -354,10 +369,14 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
                     score += a.getScore(); 
 
                     List<Asteroid> buffer = a.split();
-                    if (!buffer.isEmpty()) 
+                    if (!buffer.isEmpty()){
                         newAsteroids.addAll(buffer);
+                        break; 
 
-                    break; 
+                    }
+                    destroyAsteroidsCounter++;
+                    
+                        
                 }
             }
         }
@@ -504,7 +523,8 @@ public class GameArea extends JPanel implements ActionListener, KeyListener {
                 }
                 break;
 
-            case KeyEvent.VK_Q:  ship.activatePowerUp(); break; 
+            case KeyEvent.VK_Q:  ship.activatePowerUp(); break;
+            case KeyEvent.VK_F:  ship.disablePowerUp(); break;
             case KeyEvent.VK_P: paused = !paused; break;
             case KeyEvent.VK_R: startGame();      break;
         }

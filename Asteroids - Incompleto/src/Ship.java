@@ -175,7 +175,8 @@ public class Ship extends Entity {
      *  7. COOLDOWN SPARO
      */
 
-    public void activatePowerUp() { powerUp = true; }
+    public void activatePowerUp() { powerUp = true; } 
+    public void disablePowerUp() {powerUp = false; }
     
     public Bullet shoot(){
         if (shootTimer > 0) {
